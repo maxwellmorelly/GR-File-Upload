@@ -271,31 +271,40 @@ if st.button("🚀 Pull Prices from All Markets", type="primary", use_container_
     for result in steam_results:
         if result.title not in st.session_state.pricing_data[tier]['Steam']:
             st.session_state.pricing_data[tier]['Steam'][result.title] = {}
+        # Format the price with currency symbol
+        currency_symbol = v25.CURRENCY_SYMBOLS.get(result.currency, '')
+        formatted_price = f"{currency_symbol}{result.price:.2f}" if result.price else "N/A"
         st.session_state.pricing_data[tier]['Steam'][result.title][result.country] = {
             'price': result.price,
             'currency': result.currency,
             'price_usd': result.price_usd,
-            'formatted': result.local_price_str
+            'formatted': formatted_price
         }
     
     for result in xbox_results:
         if result.title not in st.session_state.pricing_data[tier]['Xbox']:
             st.session_state.pricing_data[tier]['Xbox'][result.title] = {}
+        # Format the price with currency symbol
+        currency_symbol = v25.CURRENCY_SYMBOLS.get(result.currency, '')
+        formatted_price = f"{currency_symbol}{result.price:.2f}" if result.price else "N/A"
         st.session_state.pricing_data[tier]['Xbox'][result.title][result.country] = {
             'price': result.price,
             'currency': result.currency,
             'price_usd': result.price_usd,
-            'formatted': result.local_price_str
+            'formatted': formatted_price
         }
     
     for result in ps_results:
         if result.title not in st.session_state.pricing_data[tier]['PlayStation']:
             st.session_state.pricing_data[tier]['PlayStation'][result.title] = {}
+        # Format the price with currency symbol
+        currency_symbol = v25.CURRENCY_SYMBOLS.get(result.currency, '')
+        formatted_price = f"{currency_symbol}{result.price:.2f}" if result.price else "N/A"
         st.session_state.pricing_data[tier]['PlayStation'][result.title][result.country] = {
             'price': result.price,
             'currency': result.currency,
             'price_usd': result.price_usd,
-            'formatted': result.local_price_str
+            'formatted': formatted_price
         }
     
     st.success(f"✅ Pulled {len(all_results)} price points! Ready for analysis.")
