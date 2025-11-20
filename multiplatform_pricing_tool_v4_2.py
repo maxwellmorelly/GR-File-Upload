@@ -53,6 +53,17 @@ st.set_page_config(page_title="Game Pricing — v4.2 Ultimate", page_icon="🎮"
 # CONFIGURATION - FIXED XBOX URLs FROM v4.1
 # ==========================================
 
+# Currency symbols for formatting
+CURRENCY_SYMBOLS = {
+    'USD': '$', 'CAD': 'CA$', 'EUR': '€', 'GBP': '£', 'AUD': 'A$', 'NZD': 'NZ$',
+    'JPY': '¥', 'KRW': '₩', 'CNY': '¥', 'HKD': 'HK$', 'TWD': 'NT$', 'SGD': 'S$',
+    'THB': '฿', 'MYR': 'RM', 'IDR': 'Rp', 'PHP': '₱', 'VND': '₫', 'INR': '₹',
+    'AED': 'AED', 'SAR': 'SAR', 'ZAR': 'R', 'BRL': 'R$', 'ARS': 'ARS$',
+    'CLP': 'CLP$', 'COP': 'COL$', 'MXN': 'Mex$', 'PEN': 'S/', 'UYU': '$U',
+    'RUB': '₽', 'TRY': '₺', 'UAH': '₴', 'PLN': 'zł', 'CHF': 'CHF', 'SEK': 'kr',
+    'NOK': 'kr', 'DKK': 'kr.', 'CZK': 'Kč', 'HUF': 'Ft', 'ILS': '₪', 'QAR': 'QR'
+}
+
 TIER_CONFIGS = {
     "AAA": {
         "Steam": [
@@ -140,7 +151,7 @@ def calculate_weighted_recommendations(pricing_data, tier_config, usd_rates):
                 rec_local = rec_usd * rate
                 
                 # Format with proper decimals
-                currency_symbol = v25.CURRENCY_SYMBOLS.get(local_currency, '')
+                currency_symbol = CURRENCY_SYMBOLS.get(local_currency, '')
                 recommendations.append({
                     'Platform': platform,
                     'Country': v25.COUNTRY_NAMES.get(country, country),
@@ -272,7 +283,7 @@ if st.button("🚀 Pull Prices from All Markets", type="primary", use_container_
         if result.title not in st.session_state.pricing_data[tier]['Steam']:
             st.session_state.pricing_data[tier]['Steam'][result.title] = {}
         # Format the price with currency symbol
-        currency_symbol = v25.CURRENCY_SYMBOLS.get(result.currency, '')
+        currency_symbol = CURRENCY_SYMBOLS.get(result.currency, '')
         formatted_price = f"{currency_symbol}{result.price:.2f}" if result.price else "N/A"
         st.session_state.pricing_data[tier]['Steam'][result.title][result.country] = {
             'price': result.price,
@@ -285,7 +296,7 @@ if st.button("🚀 Pull Prices from All Markets", type="primary", use_container_
         if result.title not in st.session_state.pricing_data[tier]['Xbox']:
             st.session_state.pricing_data[tier]['Xbox'][result.title] = {}
         # Format the price with currency symbol
-        currency_symbol = v25.CURRENCY_SYMBOLS.get(result.currency, '')
+        currency_symbol = CURRENCY_SYMBOLS.get(result.currency, '')
         formatted_price = f"{currency_symbol}{result.price:.2f}" if result.price else "N/A"
         st.session_state.pricing_data[tier]['Xbox'][result.title][result.country] = {
             'price': result.price,
@@ -298,7 +309,7 @@ if st.button("🚀 Pull Prices from All Markets", type="primary", use_container_
         if result.title not in st.session_state.pricing_data[tier]['PlayStation']:
             st.session_state.pricing_data[tier]['PlayStation'][result.title] = {}
         # Format the price with currency symbol
-        currency_symbol = v25.CURRENCY_SYMBOLS.get(result.currency, '')
+        currency_symbol = CURRENCY_SYMBOLS.get(result.currency, '')
         formatted_price = f"{currency_symbol}{result.price:.2f}" if result.price else "N/A"
         st.session_state.pricing_data[tier]['PlayStation'][result.title][result.country] = {
             'price': result.price,
