@@ -133,6 +133,10 @@ def calculate_weighted_recommendations(pricing_data, tier_config, usd_rates):
                         price_data = game_prices[country]
                         usd_price = price_data['price_usd']
                         
+                        # Skip if price_usd is None
+                        if usd_price is None or usd_price <= 0:
+                            continue
+                        
                         # Apply scale factor and weight
                         weighted_price = usd_price * scale * normalized_weights[idx]
                         weighted_sum += weighted_price
