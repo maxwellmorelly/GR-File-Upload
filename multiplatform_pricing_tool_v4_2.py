@@ -348,7 +348,9 @@ if st.button("🚀 Pull Prices from All Markets", type="primary", use_container_
             'formatted': formatted_price
         }
     
-    st.success(f"✅ Pulled {len(all_results)} price points! Ready for analysis.")
+    # Calculate total results
+    total_results = len(steam_results) + len(xbox_results) + len(ps_results)
+    st.success(f"✅ Pulled {total_results} price points! Ready for analysis.")
 
 st.divider()
 
