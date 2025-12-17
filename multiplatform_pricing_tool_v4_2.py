@@ -131,10 +131,13 @@ def calculate_weighted_recommendations(pricing_data, tier_config, usd_rates):
                     game_prices = pricing_data[platform][game_name]
                     if country in game_prices:
                         price_data = game_prices[country]
-                        usd_price = price_data['price_usd']
+                        usd_price = price_data.get('price_usd')
                         
-                        # Skip if price_usd is None
-                        if usd_price is None or usd_price <= 0:
+                        # Skip if price_usd is None or invalid
+                        try:
+                            if usd_price is None or not isinstance(usd_price, (int, float)) or usd_price <= 0:
+                                continue
+                        except (TypeError, ValueError):
                             continue
                         
                         # Apply scale factor and weight
@@ -144,7 +147,7 @@ def calculate_weighted_recommendations(pricing_data, tier_config, usd_rates):
                         count += 1
                         
                         if local_currency is None:
-                            local_currency = price_data['currency']
+                            local_currency = price_data.get('currency')
             
             if count > 0 and total_weight > 0:
                 # Calculate recommendation in USD
@@ -276,9 +279,32 @@ if st.button("🚀 Pull Prices from All Markets", type="primary", use_container_
     # Get exchange rates
     rates = v25.fetch_exchange_rates()
     
-    # Process results into DataFrame
-    all_results = list(steam_results) + list(xbox_results) + list(ps_results)
-    st.session_state.processed_df = v25.process_results(all_results, rates)
+    # Process results separately by platform to preserve platform info
+    steam_df = v25.process_results(list(steam_results), rates)
+    if not steam_df.empty:
+        steam_df['Platform'] = 'Steam'
+    
+    xbox_df = v25.process_results(list(xbox_results), rates)
+    if not xbox_df.empty:
+        xbox_df['Platform'] = 'Xbox'
+    
+    ps_df = v25.process_results(list(ps_results), rates)
+    if not ps_df.empty:
+        ps_df['Platform'] = 'PlayStation'
+    
+    # Combine all platforms
+    all_dfs = []
+    if not steam_df.empty:
+        all_dfs.append(steam_df)
+    if not xbox_df.empty:
+        all_dfs.append(xbox_df)
+    if not ps_df.empty:
+        all_dfs.append(ps_df)
+    
+    if all_dfs:
+        st.session_state.processed_df = pd.concat(all_dfs, ignore_index=True)
+    else:
+        st.session_state.processed_df = pd.DataFrame()
     
     # Also organize by platform and game for recommendations
     st.session_state.pricing_data[tier] = {'Steam': {}, 'Xbox': {}, 'PlayStation': {}}
